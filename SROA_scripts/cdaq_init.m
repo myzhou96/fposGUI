@@ -1,0 +1,18 @@
+%Create a DAQ session. Specify for how many data points to collect per second.
+    daqSession = daq.createSession('ni');
+    sample_rate = 1;
+%     daqSession.Rate = 10;
+%     daqSession.DurationInSeconds = 10;
+    disp('DAQ ready');
+    %Tell the Session which analog inputs to read from
+    ch0 = addAnalogInputChannel(daqSession,'cDAQ2Mod2','ai0','voltage');
+    ch1 = addAnalogInputChannel(daqSession,'cDAQ2Mod2','ai1','voltage');
+    ch2 = addAnalogInputChannel(daqSession,'cDAQ2Mod2','ai2','voltage');
+    ch3 = addAnalogInputChannel(daqSession,'cDAQ2Mod2','ai3','voltage');
+    ch4 = addAnalogInputChannel(daqSession,'cDAQ2Mod2','ai4','voltage');
+    ch7 = addAnalogInputChannel(daqSession,'cDAQ2Mod2','ai7','voltage');
+    ch8 = addAnalogInputChannel(daqSession,'cDAQ2Mod2','ai16','voltage');
+    % create and open a SROA log file
+    SROA_fid = fopen('SROA_thermal_data.txt','w');
+    fprintf(SROA_fid,'Time [sec] \t Cold tip [K] \t SC diode 1 [K] \t SC diode 2 [K] \t SC diode 3 [K] \t Pressure [Torr] \t Thermocouple 1 [C] \t Thermocouple 2 [C]\n');
+    
