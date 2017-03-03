@@ -1,4 +1,4 @@
-function handles = update_sroa_plot(handles)
+function handles = update_sroa_plot(handles,common_time)
 %Update function for the SROA sensors. Pulls data off of daq session
 %listener and updates the plots of the GUI.
 
@@ -13,7 +13,7 @@ function handles = update_sroa_plot(handles)
 %% Assign to Pre-allocated Variables
 
 %Assignments
-handles.sroa.time(handles.sroa.k) = handles.common_time;
+handles.sroa.time(handles.sroa.k) = common_time;
 handles.sroa.cold_tip(handles.sroa.k) = handles.SROA_data(1);
 handles.sroa.SC1(handles.sroa.k) = handles.SROA_data(2);
 handles.sroa.SC2(handles.sroa.k) = handles.SROA_data(3);
@@ -65,12 +65,6 @@ if handles.sroa.time(handles.sroa.k) - handles.sroa.time(handles.sroa.lefttime) 
         [handles.sroa.time(handles.sroa.k)-5 handles.sroa.time(handles.sroa.k)+5]);
     
 end
-
-if ~handles.osa.on && ~handles.frame.on
-    drawnow;
-end
-
-drawnow
 
 % Number of data points archived
 handles.sroa.k = handles.sroa.k+1;

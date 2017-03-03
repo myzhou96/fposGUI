@@ -716,8 +716,8 @@ def getStreamSample16(SAMPLE_DURATION, mode):
 
 def csvStreamSample32(SAMPLE_DURATION, mode, csv_ofname):
     "Creates a CSV log file with Burst Read of IMU data for specified seconds will check if BURST marker and DELIMITER is present"
-    #print time.time()
-    #first = 1
+    global my_frame_sock
+    global addr
 
     # Assumes, No Flags, Temp32, Gyro32, Accl32, Count16, No Checksum
     # Prep CSV file
@@ -727,6 +727,10 @@ def csvStreamSample32(SAMPLE_DURATION, mode, csv_ofname):
         fname = csv_ofname
     csv_out = open(fname, 'wb')
     csv_writer = csv.writer(csv_out)
+
+    time_out = open("frame_py_time.csv",'wb')
+    time_writer = csv.writer(time_out)
+    time_writer.writerow(["start","read","process","send"])
 
     # Write Header Row
     csv_writer.writerow(["M-G362 CSV Log File created by Python","Log Duration (sec): {:05.3f}".format(SAMPLE_DURATION),"Press CTRL-C to exit early","","","","","","",""])
@@ -756,6 +760,7 @@ def csvStreamSample32(SAMPLE_DURATION, mode, csv_ofname):
         while (SAMPLE_DURATION > current_time-start_time):
             if (serial_epson.inWaiting() >= data_struct.size):
                 sample_count += 1
+                t1 = time.time()
                 if (flag_resync == False):
                     data_str = serial_epson.read(data_struct.size)
                     data = data_struct.unpack(data_str)
@@ -764,6 +769,7 @@ def csvStreamSample32(SAMPLE_DURATION, mode, csv_ofname):
                     data = data_sync + struct.unpack('>iiiiiiiHB',data_str)  # less the BURST MARKER
                 flag_resync = False
                 current_time = time.time()
+                t2 = current_time
                 if (data[0] == BURST_MARKER) and (data[9] == DELIMITER):
                     if mode == 1:
                         temp = (( data[1] + TEMP32_25C ) * SF_TEMP / 65536 ) + 25
@@ -776,6 +782,15 @@ def csvStreamSample32(SAMPLE_DURATION, mode, csv_ofname):
                         csv_writer.writerow(["{:09d}".format(sample_count),"{:+05.6f}".format(gx),"{:+05.6f}".format(gy),"{:+05.6f}".format(gz),\
                                             "{:+05.6f}".format(ax),"{:+05.6f}".format(ay),"{:+05.6f}".format(az),"{:+05.06f}".format(temp),\
                                             "{:05d}".format(data[8]),"","{:05.6f}".format(current_time)])
+
+                        data = "{:09d},{:+05.6f},{:+05.6f},{:+05.6f},{:+05.6f},{:+05.6f},{:+05.6f},{:+05.6f},{:05d},{:05.6f}".format(sample_count, gx, gy, gz, ax, ay, az, temp, data[8], current_time)
+                        t3 = time.time()
+                        if (sample_count % 5) == 0:
+                            my_frame_sock.sendto(data, addr)
+                        t4 = time.time()
+                        
+                        time_writer.writerow(["{:05.6f}".format(t1*1000),"{:05.6f}".format(t2*1000-t1*1000),"{:05.6f}".format(t3*1000-t2*1000),"{:05.6f}".format(t4*1000-t3*1000)])
+                        
                     else:
                         csv_writer.writerow([sample_count, data[2], data[3], data[4], data[5], data[6], data[7], data[1], data[8],""]);
                     sys.stdout.write('.')
@@ -822,6 +837,7 @@ def csvStreamSample32(SAMPLE_DURATION, mode, csv_ofname):
     csv_writer.writerow((["Sample Error Count", "{:09d}".format(ng_count), "", "","","","","","",""]));
     csv_writer.writerow((["Data Rate", str(sample_count/delta_date.total_seconds()), "sps", "","","","","","",""]));
     csv_out.close()
+    time_out.close()
 
     with open('temp_time.txt',"w") as myfile:
         myfile.write(str(start_time))

@@ -2,7 +2,7 @@ function handles = init_OSA_imu(handles,collect_time)
 %Sends a message to the Raspberry Pi, telling it to turn on the IMU
 
 if nargin < 2
-    collect_time = 60;
+    collect_time = 7200;
 end
 
 %Set mode = 0 to generate fake data for testing purposes
@@ -10,11 +10,12 @@ mode = 1;
 
 %Use a default sample rate of 125 samples/sec.
 samplerate = 125;
-filename = 'osa_flight_log.csv';
+s = datestr(now,'dd_mmm_yy__HH_MM_SS');
+filename = [s,'osa_log.csv'];
 
 if mode == 1
     
-    display('**OPERATING IN OSA NORMAL MODE**');
+    disp('**OPERATING IN OSA NORMAL MODE**');
     
     %Open a socket connection to the OSA
     fopen(handles.osa.u);
@@ -33,11 +34,11 @@ if mode == 1
     
 else
     
-    display('**OPERATING IN OSA TEST MODE**');
+    disp('**OPERATING IN OSA TEST MODE**');
     !python PythonFiles/test_TCPclient.py &
     
 end
 
-display('OSA IMU started');
+disp('OSA IMU started');
 
 end

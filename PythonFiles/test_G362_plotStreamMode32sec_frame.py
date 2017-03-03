@@ -38,19 +38,18 @@ try:
           #Format Data
           data = "{:07.0f},{:+012.6f},{:+012.6f},{:+012.6f},{:+012.6f},{:+012.6f},{:+012.6f},{:012.6f},{:05.0f},{:14.3f}".format(\
                     sample_count, gx, gy, gz, ax, ay, az, temp, count, current_time)   
-          print data 
+          #print data 
           
           #Write to a backup log file that save everything
           with open('frame_imu.log',"a") as myfile:
                myfile.write(data)
                myfile.write('\n')
           
-          #Send data to MATLAB
-          my_sock.send(data);
+          if count%10 == 0:
+              #Send data to MATLAB
+              my_sock.send(data)
+              print time.time() - current_time
 
-          #Delay to simulate 125 Hz
-          while time.time()-current_time < 0.008:
-               time.sleep(0.001)
 
 #Press Ctrl-C to stop prematurely          
 except KeyboardInterrupt:

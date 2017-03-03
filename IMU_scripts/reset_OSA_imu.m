@@ -1,4 +1,6 @@
 function handles = reset_OSA_imu(handles)
+%Clear osa data from last run, reset indecies, reset plots, create a new
+%log file
 
 %Reset temporary data storage
 handles.osa.time = zeros(1,5000);
@@ -22,7 +24,6 @@ xlim(handles.oacc_time,[0 10]);
 xlim(handles.angv_time,[0 10]);
 
 %Create Log File
-handles.osa.filename = [num2str(handles.trial_num),'_osa.csv'];
 handles.osa.fid = fopen(handles.osa.filename,'w');
 
 %Write Log File Header Information
@@ -32,4 +33,4 @@ fprintf(handles.osa.fid,'Scaled 32-bit Data,SF_GYRO=+0.0050/2^16 dps/lsb,SF_ACCL
 fprintf(handles.osa.fid,'Scaled 32-bit Data,Gx[dps],Gy[dps],Gz[dps],Ax[mG],Ay[mG],Az[mG],Ts[deg.C],Counter[dec],Error\n');
 
 %Get Starting time
-handles.osa.startdate = datestr(now);
+handles.osa.startdate = datestr(now,'dd-mmm-yyyy HH:MM:SS.FFF');

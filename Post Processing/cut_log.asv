@@ -1,0 +1,15 @@
+function cut_data = cut_log(full_log, IDs)
+
+start_ID = ID(1);
+end_ID = ID(2);
+
+I = find(full_log.ID == start_ID);
+start_cut = I(1)
+
+J = find(full_log.ID == end_ID);
+end_cut = J(1)
+
+cut_data.time = full_log.time(start_cut:end_cut);
+cut_data.Gx = full_log.time(start_cut:end_cut);
+cut_data.Gy = full_log.time(start_cut:end_cut);
+cut_data.Gz = full_log.time(start_cut:end_cut);

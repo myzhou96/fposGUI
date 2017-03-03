@@ -1,8 +1,8 @@
-% function handles = getVicon()
+%function handles = Vicon_grab(handles)
 
 % Get a frame
 while MyClient.GetFrame().Result.Value ~= Result.Success
-%     disp('got frame')
+    %     disp('got frame')
 end
 
 % Get the frame number
@@ -90,7 +90,7 @@ for SubjectIndex = 1:SubjectCount
         end% SegmentIndex
     end
     
-%     disp('got data')
+    %     disp('got data')
     
 end% SubjectIndex
 
@@ -103,3 +103,21 @@ handles.ViconOSA.QuaternionLocal = OSA_Output_GetSegmentLocalRotationQuaternion.
 handles.ViconSROA.Position = SROA_Output_GetSegmentGlobalTranslation.Translation';
 handles.ViconSROA.EulerAngGlobal = SROA_Output_GetSegmentGlobalRotationEulerXYZ.Rotation';
 handles.ViconSROA.QuaternionGlobal = SROA_Output_GetSegmentGlobalRotationQuaternion.Rotation';
+
+try
+% Log data
+t = datestr(now, 'dd/mm/yy HH:MM:SS.FFF');
+fprintf(handles.vicon_fid,'%s \t %d \t %8.4f \t %8.4f \t %8.4f \t %8.4f \t %8.4f \t %8.4f \t %6.4f \t %6.4f \t %6.4f \t %6.4f \t %8.4f \t %8.4f \t %8.4f \t %8.4f \t %8.4f \t %8.4f \t %8.4f \t %6.4f \t %6.4f \t %6.4f \t %8.4f \t %8.4f \t %8.4f \t %6.4f \t %6.4f \t %6.4f \t %6.4f \n',...
+    t,...
+    handles.ViconFrame,...
+    handles.ViconOSA.Position,...
+    handles.ViconOSA.EulerAngGlobal,...
+    handles.ViconOSA.QuaternionGlobal,...
+    handles.ViconOSA.EulerAngBody,...
+    handles.ViconOSA.QuaternionLocal,...
+    handles.ViconSROA.Position,...
+    handles.ViconSROA.EulerAngGlobal,...
+    handles.ViconSROA.QuaternionGlobal);
+catch ME
+    disp(ME);
+end

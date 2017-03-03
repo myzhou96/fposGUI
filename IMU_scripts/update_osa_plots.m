@@ -1,4 +1,4 @@
-function handles = update_osa_plots(handles)
+function handles = update_osa_plots(handles,osa_fid)
 %Update function for the OSA IMU. Reads a putty generated log file that is
 %independent of data collection, and updates the plots of the GUI.
 
@@ -8,26 +8,43 @@ function handles = update_osa_plots(handles)
 %Outputs:
 %   handles -       An updated structure containing all of the updated handles in the GUI
 
-%tic
+lower = tic;
+higher = tic;
 if handles.osa.starttime == -1
     flushinput(handles.osa.u);
     handles.osa.starttime = 0;
 end
+start_time = toc(lower);
 
-if handles.osa.u.BytesAvailable >= 119
+%if handles.osa.u.BytesAvailable >= 119
+    lower = tic;
+    flushinput(handles.osa.u);
+    pause(0.002);
+    flush_time = toc(lower);
+    
     %% Read Data
     %tic
-    single_measurement = fread(handles.osa.u,119);
-    
-    if strcmp(char(single_measurement(1:4)'),'Done') == 1
-        set(handles.go, 'String','GO');
-        guidata(gcbo,handles);
-        return
+    lower = tic;
+    try
+        single_measurement = fread(handles.osa.u);
+        
+        if strcmp(char(single_measurement(1:4)'),'Done') == 1
+            set(handles.go, 'String','GO');
+            guidata(gcbo,handles);
+            return
+        end
+        
+    catch ME
+        disp(ME.message);
+        single_measurement = [];
     end
+    read_time = toc(lower);
     
+    lower = tic;
     A = sscanf(char(single_measurement'),'%f,%f,%f,%f,%f,%f,%f,%f,%f,%f');
-    %toc
+    convert_time = toc(lower);
 
+    lower = tic;
     %% Assign to Pre-allocated Variables
     if length(A) == 10
     %tic
@@ -47,14 +64,17 @@ if handles.osa.u.BytesAvailable >= 119
     handles.osa.Ay(handles.osa.k) = A(6);
     handles.osa.Az(handles.osa.k) = A(7);
 
-    %Save to log file
-    fprintf(handles.osa.fid, '%d,%f,%f,%f,%f,%f,%f,%f,%d,,%f\n', A);
-    
+    %Save to log 
+    try
+        fprintf(handles.osa.fid, '%d,%f,%f,%f,%f,%f,%f,%f,%d,,%f\n', A);
+    catch ME
+        disp(ME.message);
+    end
     %toc
     
     %% Plot data
     %tic
-    if mod(A(1),handles.osa.plotDownSample) == 0 && handles.osa.on == 1
+    %if mod(A(1),handles.osa.plotDownSample) == 0 && handles.osa.on == 1
         
         % Update plot x and y axes
         set(handles.osa.Ax_axis,...
@@ -88,10 +108,8 @@ if handles.osa.u.BytesAvailable >= 119
                 'xlim',[handles.osa.time(handles.osa.k)-5, handles.osa.time(handles.osa.k)+5]);
         
         end
-        
-        drawnow;
-        
-    end
+
+    %end
 %toc
     
 %   Number of data points archived
@@ -113,8 +131,15 @@ if handles.osa.u.BytesAvailable >= 119
     end
     
     %toc
+    else
+        disp('OSA Error');
     end
+    parse_time = toc(lower);
+    osa_time = toc(higher);
+    
+    fprintf(osa_fid,'%f\t%f\t%f\t%f\t%f\t%f\n',...
+        start_time,flush_time,read_time,convert_time,parse_time,osa_time);
 end
-end
+%end
 
 

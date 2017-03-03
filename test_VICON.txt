@@ -1,0 +1,1 @@
+Timestamp 	 Frame # 	 OSA Translation 					 OSA Inertial EulerXYZ 					 OSA Inertial Quaternion 						 OSA Body Euler Angles 				 OSA Body Quaternion 						 SROA Translation 					 SROA EulerXYZ 							 SROA Quaternion

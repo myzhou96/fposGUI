@@ -1,8 +1,5 @@
 function [handles] = setup_OSA_Plots(handles)
-
-%Automatically turn on plot
-set(handles.osa_check,'Value',1);
-handles.osa.on = 1;
+%Setup osa plots, including titles, labels, and axes
 
 %Create socket to listen on
 %handles.osa.u = tcpip('10.0.0.200',2222);
@@ -30,6 +27,7 @@ ylim(handles.oacc_time,[-1500 1500]);
 
 
 %% Create Angular Velocity Plot
+%angv_Time: the handle of the frame angular velocity plot
 
 handles.osa.Gx_axis = plot(handles.angv_time,0,nan(1),'-r');
 hold(handles.angv_time,'on');
@@ -64,7 +62,7 @@ handles.osa.Az = zeros(1,1000);
 %% Other variables for updating plots
 handles.osa.k = 1;
 handles.osa.idx = 1;
-handles.osa.starttime = 0;
+handles.osa.starttime = -1;
 handles.osa.lefttime = 1;
 handles.osa.filename = 'test_osa_data.csv';
 

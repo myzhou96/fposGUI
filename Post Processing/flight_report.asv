@@ -1,0 +1,299 @@
+%% generates flight report given all the experiments run that day
+% flight report includes:
+% what kind of experiments for that flight day
+
+% for each experiment:
+
+    % type of experiment
+    
+    % displacement IA set at
+    
+    % path angle IA set at
+    
+    % parabola number
+    
+    % what time the experiment started
+    
+    % whether the experiment is good
+    
+    % experiment notes
+    
+    % whether the OSA captured and at what time
+    
+    % whether the OSA contacted the SROA and at what time
+    
+    % whether the OSA was bumped and at what time
+    
+    % whether the frame was bumped and at what time
+    
+    % plot of Vicon data: OSA_position
+                        % OSA_EulerAngGlobal and OSA_QuaternionGlobal
+                        % OSA_EulerAngBody and OSA_QuaternionLocal
+                        % SROA_position
+                        % SROA_EulerAngGlobal and SROA_QuaternionGlobal
+                        
+    % plot of OSA IMU data: angular velocity and acceleration
+    
+    % plot of frame IMU data: angular velocity and acceleration
+    
+    % plot of SROA health data: pressure, cold temp, warm temp
+    
+    
+files = dir('*.mat');
+
+for i = 1:size(files)
+    %%
+    load(files(i).name)
+    % displays experiment information (qualitative)
+    exp
+    fprintf('Notes: %s \n',exp.notes)
+    
+    start_time = max([exp.Vicon_data.common_time(1) exp.OSA_GUI.start_time exp.IFA_GUI.start_time]);
+    end_time = min([exp.Vicon_data.common_time(end) exp.OSA_GUI.start_time+exp.OSA_GUI.time(end) exp.IFA_GUI.start_time+exp.IFA_GUI.time(end)]);
+    % Vicon plots
+    figure
+    plot(exp.Vicon_data.common_time,...
+        exp.Vicon_data.OSA_Position)
+    title('Vicon OSA position time history')
+    xlabel('time [sec]')
+    ylabel('position [mm]')
+    legend('x','y','z')
+    xlim([start_time end_time])
+    
+    figure
+    subplot(2,1,1)
+    plot(exp.Vicon_data.common_time,...
+        exp.Vicon_data.OSA_EulerAngGlobal)
+    title('Vicon OSA Global Euler Angle time history')
+    xlabel('time [sec]')
+    ylabel('Euler angle [deg]')
+    legend('x','y','z')
+    xlim([start_time end_time])
+    ylim([-pi pi])
+%     subplot(2,1,2)
+%     plot(exp.Vicon_data.common_time - exp.Vicon_data.common_time(1),...
+%         exp.Vicon_data.OSA_EulerAngBody)
+%     title('Vicon OSA Body Euler Angle time history')
+%     xlabel('time [sec]')
+%     ylabel('Euler angle [deg]')
+%     legend('x','y','z')
+    subplot(2,1,2)
+    plot(exp.Vicon_data.common_time,...
+        exp.Vicon_data.OSA_QuaternionGlobal)
+    title('Vicon OSA Global Quaternion time history')
+    xlabel('time [sec]')
+    ylabel('quaternion')
+    legend('x','y','z','s')
+    xlim([start_time end_time])
+    ylim([-1.1 1.1])
+%     subplot(2,2,4)
+%     plot(exp.Vicon_data.common_time - exp.Vicon_data.common_time(1),...
+%         exp.Vicon_data.OSA_QuaternionLocal)
+%     title('Vicon OSA Body Quaternion time history')
+%     xlabel('time [sec]')
+%     ylabel('quaternion')
+%     legend('x','y','z','s')
+    
+    figure
+    plot(exp.Vicon_data.common_time,...
+        exp.Vicon_data.SROA_Position)
+    title('Vicon SROA position time history')
+    xlabel('time [sec]')
+    ylabel('position [mm]')
+    legend('x','y','z')
+    xlim([start_time end_time])
+    
+    figure
+    subplot(2,1,1)
+    plot(exp.Vicon_data.common_time,...
+        exp.Vicon_data.SROA_EulerAngGlobal)
+    title('Vicon SROA Global Euler Angle time history')
+    xlabel('time [sec]')
+    ylabel('Euler angle [deg]')
+    legend('x','y','z')
+    ylim([-pi pi])
+    subplot(2,1,2)
+    plot(exp.Vicon_data.common_time,...
+        exp.Vicon_data.SROA_QuaternionGlobal)
+    title('Vicon SROA Global Quaternion time history')
+    xlabel('time [sec]')
+    ylabel('quaternion')
+    legend('x','y','z','s')
+    ylim([-1.1 1.1])
+    xlim([start_time end_time])
+    
+    % OSA plots
+    figure
+    subplot(2,1,1)
+    plot(exp.OSA_data.time, exp.OSA_data.Gx,...
+        exp.OSA_data.time, exp.OSA_data.Gy,...
+        exp.OSA_data.time, exp.OSA_data.Gz)
+    title('OSA IMU log angular velocity time history')
+    xlabel('time [sec]')
+    ylabel('angular velocity [dps]')
+    legend('x','y','z')
+%     xlim([start_time end_time])
+    subplot(2,1,2)
+    plot(exp.OSA_GUI.time + exp.OSA_GUI.start_time, exp.OSA_GUI.Gx,...
+        exp.OSA_GUI.time + exp.OSA_GUI.start_time, exp.OSA_GUI.Gy,...
+        exp.OSA_GUI.time + exp.OSA_GUI.start_time, exp.OSA_GUI.Gz)
+    title('OSA IMU GUI angular velocity time history')
+    xlabel('time [sec]')
+    ylabel('angular velocity [dps]')
+    legend('x','y','z')
+%     xlim([start_time end_time])
+    
+    figure
+    subplot(2,1,1)
+    plot(exp.OSA_data.time, exp.OSA_data.Gx,...
+        exp.OSA_data.time, exp.OSA_data.Gy,...
+        exp.OSA_data.time, exp.OSA_data.Gz)
+    title('OSA IMU log angular velocity time history')
+    xlabel('time [sec]')
+    ylabel('angular velocity [dps]')
+    legend('x','y','z')
+%     xlim([start_time end_time])
+    subplot(2,1,2)
+    plot(exp.OSA_GUI.time + exp.OSA_GUI.start_time, exp.OSA_GUI.Gx,...
+        exp.OSA_GUI.time + exp.OSA_GUI.start_time, exp.OSA_GUI.Gy,...
+        exp.OSA_GUI.time + exp.OSA_GUI.start_time, exp.OSA_GUI.Gz)
+    title('OSA IMU GUI angular velocity time history')
+    xlabel('time [sec]')
+    ylabel('angular velocity [dps]')
+    legend('x','y','z')
+%     xlim([start_time end_time])
+    
+    % frame plots
+    figure
+    plot(exp.IFA_data.time + exp.IFA_data.start_time, exp.IFA_data.Gx,...
+        exp.IFA_data.time + exp.IFA_data.start_time, exp.IFA_data.Gy,...
+        exp.IFA_data.time + exp.IFA_data.start_time, exp.IFA_data.Gz)
+    title('IFA IMU angular velocity time history')
+    xlabel('time [sec]')
+    ylabel('angular velocity [dps]')
+    xlim([start_time end_time])
+    legend('x','y','z')
+    
+    figure
+    plot(exp.IFA_data.time + exp.IFA_data.start_time, exp.IFA_data.Ax,...
+        exp.IFA_data.time + exp.IFA_data.start_time, exp.IFA_data.Ay,...
+        exp.IFA_data.time + exp.IFA_data.start_time, exp.IFA_data.Az)
+    title('IFA IMU acceleration time history')
+    xlabel('time [sec]')
+    ylabel('acceleration [mG]')
+    xlim([start_time end_time])
+    legend('x','y','z')
+    
+    % SROA plots
+%     figure
+%     subplot(3,1,1)
+%     plot(exp.SROA_data.common_time - exp.SROA_data.common_time(1),...
+%         exp.SROA_data.pressure)
+%     title('SROA pressure time history')
+%     xlabel('time [sec]')
+%     ylabel('pressure [torr]')
+%     subplot(3,1,2)
+%     plot(exp.SROA_data.common_time - exp.SROA_data.common_time(1),...
+%         [exp.SROA_data.cold_tip exp.SROA_data.SC_diode1 exp.SROA_data.SC_diode2])
+%     title('SROA cold temp time history')
+%     xlabel('time [sec]')
+%     ylabel('temperature [K]')
+%     legend('cold tip','SC_1','SC_2')
+%     subplot(3,1,3)
+%     plot(exp.SROA_data.common_time - exp.SROA_data.common_time(1),...
+%         [exp.SROA_data.compressor exp.SROA_data.expander])
+%     title('SROA warm temp time history')
+%     xlabel('time [sec]')
+%     ylabel('temperature [C]')
+%     legend('compressor','expander')
+    
+    % Vicon and OSA IMU comparison
+    Vicon_omega = quat2omega(exp.Vicon_data.common_time,exp.Vicon_data.OSA_QuaternionGlobal);
+    dt = diff(exp.Vicon_data.common_time);
+    dEuler = [diff(exp.Vicon_data.OSA_EulerAngGlobal(:,1))./dt,...
+        diff(exp.Vicon_data.OSA_EulerAngGlobal(:,2))./dt,...
+        diff(exp.Vicon_data.OSA_EulerAngGlobal(:,3))./dt];
+    figure
+    subplot(3,1,1)
+    plot(exp.OSA_data.time + exp.OSA_data.start_time, exp.OSA_data.Gx,...
+        exp.OSA_data.time + exp.OSA_data.start_time, exp.OSA_data.Gy,...
+        exp.OSA_data.time + exp.OSA_data.start_time, exp.OSA_data.Gz)
+    title('Comparison of Vicon and OSA angular velocity time')
+    xlabel('time [sec]')
+    ylabel('OSA \omega [dps]')
+    legend('x','y','z','Location','northwest')
+    ylim([min([exp.OSA_data.Gx; exp.OSA_data.Gy; exp.OSA_data.Gz]) ...
+        max([exp.OSA_data.Gx; exp.OSA_data.Gy; exp.OSA_data.Gz])])
+    xlim([start_time end_time])
+    subplot(3,1,2)
+    plot(exp.Vicon_data.common_time, Vicon_omega'*180/pi)
+    xlabel('time [sec]')
+    ylabel('Vicon quat \omega [dps]')
+    legend('x','y','z','Location','northwest')
+    ylim([min([exp.OSA_data.Gx; exp.OSA_data.Gy; exp.OSA_data.Gz]) ...
+        max([exp.OSA_data.Gx; exp.OSA_data.Gy; exp.OSA_data.Gz])])
+    xlim([start_time end_time])
+    subplot(3,1,3)
+    plot(exp.Vicon_data.common_time(1:end-1),...
+        dEuler*180/pi)
+    xlabel('time [sec]')
+    ylabel('Vicon Euler \omega [dps]')
+    legend('x','y','z','Location','northwest')
+    ylim([min([exp.OSA_data.Gx; exp.OSA_data.Gy; exp.OSA_data.Gz]) ...
+        max([exp.OSA_data.Gx; exp.OSA_data.Gy; exp.OSA_data.Gz])])
+    xlim([start_time end_time])
+    
+    Vicon_accel = [diff(diff(exp.Vicon_data.OSA_Position(:,1))./dt)./dt(1:end-1),...
+        diff(diff(exp.Vicon_data.OSA_Position(:,2))./dt)./dt(1:end-1),...
+        diff(diff(exp.Vicon_data.OSA_Position(:,3))./dt)./dt(1:end-1)];
+    figure
+    subplot(2,1,1)
+    plot(exp.OSA_data.time + exp.OSA_data.start_time, exp.OSA_data.Ax*9.80665e-3,...
+        exp.OSA_data.time + exp.IFA_data.start_time, exp.OSA_data.Ay*9.80665e-3,...
+        exp.OSA_data.time + exp.IFA_data.start_time, exp.OSA_data.Az*9.80665e-3)
+    title('Comparison of Vicon and IMU acceleration time history')
+    xlabel('time [sec]')
+    ylabel('IMU body acceleration [m/s^2]')
+    legend('x','y','z','Location','northwest')
+    ylim([min([exp.OSA_data.Ax; exp.OSA_data.Ay; exp.OSA_data.Az]) ...
+        max([exp.OSA_data.Ax; exp.OSA_data.Ay; exp.OSA_data.Az])]*9.80665e-3)
+    xlim([start_time end_time])
+    subplot(2,1,2)
+    plot(exp.Vicon_data.common_time(1:end-2),...
+        Vicon_accel)
+    xlabel('time [sec]')
+    ylabel('Vicon inertial acceleration [m/s^2]')
+    legend('x','y','z','Location','northwest')
+    ylim([min([exp.OSA_data.Ax; exp.OSA_data.Ay; exp.OSA_data.Az]) ...
+        max([exp.OSA_data.Ax; exp.OSA_data.Ay; exp.OSA_data.Az])]*9.80665e-3)
+    xlim([start_time end_time])
+    
+    figure
+    subplot(3,1,1)
+    plot(exp.IFA_data.time + exp.IFA_data.start_time, exp.IFA_data.Ax,...
+        exp.IFA_data.time + exp.IFA_data.start_time, exp.IFA_data.Ay,...
+        exp.IFA_data.time + exp.IFA_data.start_time, exp.IFA_data.Az)
+    title('Comparison of IFA and OSA IMU acceleration time history')
+    xlabel('time [sec]')
+    ylabel('IFA accel [mG]')
+    legend('x','y','z','Location','northwest')
+    xlim([start_time end_time])
+    subplot(3,1,2)
+    plot(exp.OSA_data.time + exp.OSA_data.start_time, exp.OSA_data.Ax,...
+        exp.OSA_data.time + exp.OSA_data.start_time, exp.OSA_data.Ay,...
+        exp.OSA_data.time + exp.OSA_data.start_time, exp.OSA_data.Az)
+    xlabel('time [sec]')
+    ylabel('OSA accel [mG]')
+    legend('x','y','z','Location','northwest')
+    xlim([start_time end_time])
+    subplot(3,1,3)
+    plot(exp.IFA_data.time + exp.IFA_data.start_time, exp.IFA_data.Gx,...
+        exp.IFA_data.time + exp.IFA_data.start_time, exp.IFA_data.Gy,...
+        exp.IFA_data.time + exp.IFA_data.start_time, exp.IFA_data.Gz)
+    xlabel('time [sec]')
+    ylabel('IFA \omega [dps]')
+    legend('x','y','z','Location','northwest')
+    xlim([start_time end_time])
+    
+%     pause
+end

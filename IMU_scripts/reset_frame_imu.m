@@ -1,4 +1,6 @@
 function handles = reset_frame_imu(handles)
+%Clear data from last run, reset indecies, reset plots, and create a new
+%log file
 
 %Reset temporary data storage
 handles.frame.sample_num = zeros(1,5000);
@@ -20,7 +22,6 @@ xlim(handles.facc_time,[0 10]);
 xlim(handles.fangv_time,[0 10]);
 
 %Create Log File
-handles.frame.filename = [num2str(handles.trial_num),'_frame.csv'];
 handles.frame.fid = fopen(handles.frame.filename,'w');
 
 %Write Log File Header Information
@@ -34,7 +35,7 @@ fopen(handles.frame.u);
 disp('Socket Opened');
 
 %Get Starting time
-handles.frame.startdate = datestr(now);
+handles.frame.startdate = datestr(now,'dd-mmm-yyyy HH:MM:SS.FFF');
 
 
 

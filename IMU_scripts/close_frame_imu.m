@@ -9,13 +9,13 @@ function handles = close_frame_imu(handles)
 fclose(handles.frame.u);
 
 %Get the stop time
-handles.frame.stopdate = datestr(now);
-
+handles.frame.stopdate = datestr(now,'dd-mmm-yyyy HH:MM:SS.FFF');
+handles.frame.k
 %Write Additional Information to Log
 fprintf(handles.frame.fid,'Log Start,%s\n',handles.frame.startdate);
 fprintf(handles.frame.fid,'Log End,%s\n',handles.frame.stopdate);
-fprintf(handles.frame.fid,'Log Duration,%f\n',handles.frame.time(handles.frame.k));
-fprintf(handles.frame.fid,'Sample Numbers (Start End),%f,%f\n',handles.frame.sample_num([1,handles.frame.k]));
+fprintf(handles.frame.fid,'Log Duration,%f\n',handles.frame.time(handles.frame.k-1));
+fprintf(handles.frame.fid,'Sample Numbers (Start End),%f,%f\n',handles.frame.sample_num([1,handles.frame.k-1]));
 fprintf(handles.frame.fid,'Sample Error Count\n');
-fprintf(handles.frame.fid,'Data Rate,%f,sps\n',handles.frame.k/handles.frame.time(handles.frame.k));
+fprintf(handles.frame.fid,'Data Rate,%f,sps\n',(handles.frame.k-1)/handles.frame.time(handles.frame.k-1));
 fclose(handles.frame.fid);

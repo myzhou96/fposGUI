@@ -15,17 +15,7 @@ function handles = init_frame_imu(handles,collect_time)
 
 %Make collect_time an optional argument.
 if nargin < 2
-    collect_time = 60;
-end
-
-% %Clear log file for incoming data to make reading faster. log_file_name
-% %correponds to the name of the text file that G362_plotStreamMode32sec.py
-% %writes data to.
-try
-    log_file_name = 'frame_imu.log';
-    delete(log_file_name);
-catch
-    warning('Log file could not be deleted. New data in log will be appended to old data');
+    collect_time = 7200;
 end
 
 %Run the Frame IMU in the background. This ensures data will be collected

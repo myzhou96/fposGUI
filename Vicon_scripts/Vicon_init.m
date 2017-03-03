@@ -1,6 +1,6 @@
 % Object names
-OSA = 'OSA_testing';
-SROA = 'Wand';
+OSA = 'OSA_228_1621_19m';
+SROA = 'SROA';
 
 % Program options
 HapticOnList = {'ViconAP_001';'ViconAP_002'};
@@ -59,6 +59,6 @@ Output_GetAxisMapping = MyClient.GetAxisMapping();
 
 vicon_update_rate = 5;
 
-Vicon_fid=fopen('test_VICON.txt','w');
+%Vicon_fid=fopen('test_VICON.txt','w');
 % Declare contents of data file
-fprintf(Vicon_fid,'Timestamp \t Frame # \t OSA Translation \t\t\t\t\t OSA Inertial EulerXYZ \t\t\t\t\t OSA Inertial Quaternion \t\t\t\t\t\t OSA Body Euler Angles \t\t\t\t OSA Body Quaternion \t\t\t\t\t\t SROA Translation \t\t\t\t\t SROA EulerXYZ \t\t\t\t\t\t\t SROA Quaternion\n');
+%fprintf(Vicon_fid,'Timestamp \t Frame # \t OSA Translation \t\t\t\t\t OSA Inertial EulerXYZ \t\t\t\t\t OSA Inertial Quaternion \t\t\t\t\t\t OSA Body Euler Angles \t\t\t\t OSA Body Quaternion \t\t\t\t\t\t SROA Translation \t\t\t\t\t SROA EulerXYZ \t\t\t\t\t\t\t SROA Quaternion\n');

@@ -8,21 +8,20 @@ handles.vicon.on = 1;
 %% Create Pressure Plot
 % quaternion: the handle of the vicon quaternion plot
 
-handles.vicon.qx_axis = plot(handles.quaternion,0,nan(1),'-r');
-hold(handles.quaternion,'on');
-handles.vicon.qy_axis = plot(handles.quaternion,0,nan(1),'-g');
-handles.vicon.qz_axis = plot(handles.quaternion,0,nan(1),'-b');
-handles.vicon.qs_axis = plot(handles.quaternion,0,nan(1),'-k');
-hold(handles.quaternion,'off');
+handles.vicon.roll_axis = plot(handles.euler,0,nan(1),'-r');
+hold(handles.euler,'on');
+handles.vicon.pitch_axis = plot(handles.euler,0,nan(1),'-g');
+handles.vicon.yaw_axis = plot(handles.euler,0,nan(1),'-b');
+hold(handles.euler,'off');
 
-title(handles.quaternion,'OSA Quaternion-Time','FontSize',10,'FontWeight','bold');
-xlabel(handles.quaternion,'Time, t (s)');
-ylabel(handles.quaternion,'Quaternion');
+title(handles.euler,'OSA Body Fixed Euler Angles','FontSize',10,'FontWeight','bold');
+xlabel(handles.euler,'Time, t (s)');
+ylabel(handles.euler,'Angles');
 
-axis(handles.quaternion,'auto');
-box(handles.quaternion,'on');
+axis(handles.euler,'auto');
+box(handles.euler,'on');
 
-xlim(handles.quaternion,[0 10]);
+xlim(handles.euler,[0 10]);
 
 
 
@@ -50,10 +49,9 @@ handles.vicon.time = 1:5000;
 handles.vicon.posx = zeros(1,5000);
 handles.vicon.posy = zeros(1,5000);
 handles.vicon.posz = zeros(1,5000);
-handles.vicon.qx = zeros(1,5000);
-handles.vicon.qy = zeros(1,5000);
-handles.vicon.qz = zeros(1,5000);
-handles.vicon.qs = zeros(1,5000);
+handles.vicon.roll = zeros(1,5000);
+handles.vicon.pitch = zeros(1,5000);
+handles.vicon.yaw = zeros(1,5000);
 
 %% Other variables for updating plots
 handles.vicon.k = 1;

@@ -24,7 +24,7 @@ args = parser.parse_args()
 
 if args.drate:
     drate = args.drate
-    mv_avg_filter = "NONE"
+    mv_avg_filter = "MV_AVG32"
 
 if (args.listserial or args.serial_port == ""):
     print ("Available COM ports:", list(imu.serial_ports()))
@@ -65,19 +65,27 @@ else:
     imu.getMode()                   #MODE_STATE 0 = Sampling 1= Configuration
     
     t1 = time.time() #Time data collection begins
+    
+    log_day = time.strftime("%b_%d")
+    log_time = time.strftime("%H_%M_%S")
+    log_filename = "Test_Data/"+log_day+"/FlightLogs/"+log_time+"_frame_log.csv"
+    directory = os.path.dirname(log_filename)
 
-    imu.getStreamSample32(args.sec_duration,1,args.ofilename) #arg1 = time in seconds, arg2 = mode
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+    imu.csvStreamSample32(args.sec_duration,1,log_filename) #arg1 = time in seconds, arg2 = mode
 
     imu.close_serial()
 
-    timeToData = t1-t0;
-    with open('IMU_Time.txt',"a") as myfile:
-        myfile.write(args.ofilename+','+str(timeToData)+',')
-    with open('temp_time.txt',"a") as myfile:
-        myfile.write(','+str(t0))
-
+    #timeToData = t1-t0;
+    #with open('IMU_Time.txt',"a") as myfile:
+    #    myfile.write(args.ofilename+','+str(timeToData)+',')
+    #with open('temp_time.txt',"a") as myfile:
+    #    myfile.write(','+str(t0))
 
 print("Data Collection Complete")
+
 #imu.getMode()
 #imu.csvStreamSample32(5,1,'FirstData') # arg1 = time in seconds, arg2 = mode
 #In get Sample, mode: 0 = Formatted Data with Units 1 = Raw Voltage Data

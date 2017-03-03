@@ -1,10 +1,7 @@
 function [handles] = setup_Frame_Plots(handles)
+% Formate plots for the frame IMU, including plot titles, labels, and axes
 
-%Automatically turn on plot
-set(handles.ifa_check,'Value',1);
-handles.frame.on = 1;
-
-%Create socket to listen on (mode doesn't matter)
+%Create socket to listen on
 handles.frame.u = udp('127.0.0.1','LocalPort',9556);
 handles.frame.u.InputBufferSize = 512;
 
@@ -29,9 +26,8 @@ xlim(handles.facc_time,[0 10]);
 ylim(handles.facc_time,[-1500 1500]);
 
 
-
 %% Create Angular Velocity Plot
-% %I guess the gui doesnt have a frame angular rate plot?
+%fangv_time: the handle of the frame angular velocity plot
 
 handles.frame.Gx_axis = plot(handles.fangv_time,0,nan(1),'-r');
 hold(handles.fangv_time,'on');
@@ -46,8 +42,10 @@ ylabel(handles.fangv_time,'Angular Velocity, \omega (deg/s)');
 
 axis(handles.fangv_time,'manual');
 box(handles.fangv_time,'on');
+
 xlim(handles.fangv_time,[0 10]);
 ylim(handles.fangv_time,[-150 150]);
+
 
 %% Pre-allocate Data for Plots
 %Creates new fields in the handles structure
@@ -65,7 +63,7 @@ handles.frame.Az = zeros(1,5000);
 %% Other variables for updating plots
 handles.frame.k = 1;
 handles.frame.idx = 1;
-handles.frame.starttime = 0;
+handles.frame.starttime = -1;
 handles.frame.lefttime = 1;
 
 %Frame Plots will update every 1/n sample points
