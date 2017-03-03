@@ -258,12 +258,12 @@ elseif strcmp(str, 'STOP')
     d = get(handles.distance, 'String');
     a = get(handles.angle, 'String');
     trial_num_int = int2str(handles.trial_num);
-    exp_name = strcat(get(handles.name, 'String'), '_', d, '_', a, '_', trial_num_int);
+    handles.exp_name = strcat(get(handles.name, 'String'), '_', d, '_', a, '_', trial_num_int);
     
     % Append to excel file
     exc = actxserver('Excel.Application');
     exc.Visible = 1;
-    xlsappend('experiment_log.xls', {exp_name t fco fca fb fi notes}, 1);
+    xlsappend('experiment_log.xls', {handles.exp_name t fco fca fb fi notes}, 1);
     
 end
 
